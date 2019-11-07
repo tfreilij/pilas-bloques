@@ -1,4 +1,6 @@
 import Component from '@ember/component';
+//import Ember from '@ember';
+
 let VERSION_DEL_FORMATO_DE_ARCHIVO = 2;
 
 export default Component.extend({
@@ -7,6 +9,7 @@ export default Component.extend({
   actividad: null,
   workspace: null,
   xml: null,
+  store: Ember.inject.service(),
   inElectron: typeof process !== "undefined", //TODO: Mover a un service y reemplazar a todos los lugares donde se usa.
 
   version() {
@@ -57,7 +60,10 @@ export default Component.extend({
   },
 
   cargarProyecto(contenido){
-    alert(contenido);
+    var desafio = JSON.parse(contenido);
+    desafio.id = 666;
+    this.store.createRecord('desafio',desafio);
+    //this.get('router').transitionTo('desafio/666');
   },
 
   openElectronLoadDialog() {
