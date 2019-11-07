@@ -20,7 +20,6 @@ export default Component.extend({
       reader.onload = (event) => resolve(event.target.result);
       reader.readAsText(archivo);
     })
-      .then((contenido) => this.cargarSolucion(contenido));
   },
 
   leerSolucionFS(archivo) {
@@ -57,6 +56,10 @@ export default Component.extend({
     }
   },
 
+  cargarProyecto(contenido){
+    alert(contenido);
+  },
+
   openElectronLoadDialog() {
     const { dialog } = require('electron').remote
     const archivos = dialog.showOpenDialog({ //TODO: this config exists in packaging/electron.js
@@ -85,10 +88,25 @@ export default Component.extend({
       let archivo = event.target.files[0];
 
       if (archivo) {
-        this.leerSolucionWeb(archivo).catch(alert);
+        this.leerSolucionWeb(archivo)
+          .then((contenido) => this.cargarSolucion(contenido))
+          .catch(alert);
       }
 
-      this.limpiarInput(); // Fuerza a que se pueda cargar dos o más veces el mismo archivo
+      this.limpiarInput(this.fileInput()); // Fuerza a que se pueda cargar dos o más veces el mismo archivo
+      return false;
+    });
+
+    this.fileInputProyecto().change((event) => {
+      let archivo = event.target.files[0];
+
+      if (archivo) {
+        this.leerSolucionWeb(archivo)
+          .then((contenido) => this.cargarProyecto(contenido))
+          .catch(alert);
+      }
+
+      this.limpiarInput(this.fileInputProyecto()); // Fuerza a que se pueda cargar dos o más veces el mismo archivo
       return false;
     });
   },
@@ -97,8 +115,12 @@ export default Component.extend({
     return this.$("#cargarActividadInput");
   },
 
-  limpiarInput() {
-    this.fileInput().value = null;
+  fileInputProyecto() {
+    return this.$("#cargarProyectoInput");
+  },
+
+  limpiarInput(input) {
+    input.value = null;
   },
 
   actions: {
@@ -122,5 +144,9 @@ export default Component.extend({
 
       this.descargar(JSON.stringify(contenido), fileName, 'application/octet-stream');
     },
+
+    importarProyecto(){
+      this.fileInputProyecto().click();
+    }
   }
 });
