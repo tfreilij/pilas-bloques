@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-//import Ember from '@ember';
 
 let VERSION_DEL_FORMATO_DE_ARCHIVO = 2;
 
@@ -59,13 +58,6 @@ export default Component.extend({
     }
   },
 
-  cargarProyecto(contenido){
-    var desafio = JSON.parse(contenido);
-    desafio.id = 666;
-    this.store.createRecord('desafio',desafio);
-    //this.get('router').transitionTo('desafio/666');
-  },
-
   openElectronLoadDialog() {
     const { dialog } = require('electron').remote
     const archivos = dialog.showOpenDialog({ //TODO: this config exists in packaging/electron.js
@@ -102,27 +94,10 @@ export default Component.extend({
       this.limpiarInput(this.fileInput()); // Fuerza a que se pueda cargar dos o más veces el mismo archivo
       return false;
     });
-
-    this.fileInputProyecto().change((event) => {
-      let archivo = event.target.files[0];
-
-      if (archivo) {
-        this.leerSolucionWeb(archivo)
-          .then((contenido) => this.cargarProyecto(contenido))
-          .catch(alert);
-      }
-
-      this.limpiarInput(this.fileInputProyecto()); // Fuerza a que se pueda cargar dos o más veces el mismo archivo
-      return false;
-    });
   },
 
   fileInput() {
     return this.$("#cargarActividadInput");
-  },
-
-  fileInputProyecto() {
-    return this.$("#cargarProyectoInput");
   },
 
   limpiarInput(input) {
@@ -150,9 +125,5 @@ export default Component.extend({
 
       this.descargar(JSON.stringify(contenido), fileName, 'application/octet-stream');
     },
-
-    importarProyecto(){
-      this.fileInputProyecto().click();
-    }
   }
 });
