@@ -40,8 +40,8 @@ export default Component.extend({
   },
 
 
-cargarProyecto(contenido){
-    var desafio = JSON.parse(contenido);
+  cargarProyecto(contenido){
+    var desafio = JSON.parse(atob(contenido));
     desafio.id = this.lowBudgetUuidv4();
     this.store.createRecord('desafio', desafio);
     this.router.transitionTo('desafio', desafio.id);
